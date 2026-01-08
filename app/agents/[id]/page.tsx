@@ -1,96 +1,178 @@
-import { getAgentById, getPropertiesByAgent } from '@/lib/agents';
-import PropertyGrid from '@/components/PropertyGrid';
+import Image from 'next/image';
+import { getAgentById } from '@/lib/agents';
+import { properties } from '@/lib/properties';
+import CuratedPortfolioGrid from '@/components/CuratedPortfolioGrid';
 import Link from 'next/link';
+import { ChevronLeft, Star } from 'lucide-react';
 
-export default function AgentProfilePage({
+export default async function AgentProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const agent = getAgentById(params.id);
-  const properties = agent ? getPropertiesByAgent(params.id) : [];
+  const { id } = await params;
+  const agent = getAgentById(id);
 
   if (!agent) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <h1 className="text-2xl font-bold">Agent not found</h1>
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="text-center">
+          <h1 className="text-3xl font-serif text-gray-900 mb-4">Agent Not Found</h1>
+          <Link href="/agents" className="text-blue-600 hover:underline">
+            Back to Agents
+          </Link>
+        </div>
       </div>
     );
   }
 
+  // Get properties handled by this agent
+  const agentProperties = properties.filter((p) =>
+    agent.properties.includes(p.id)
+  );
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <Link href="/agents" className="text-blue-600 hover:underline mb-6 block">
-        ← Back to agents
-      </Link>
+    <div className="min-h-screen bg-white py-8 sm:py-16 lg:py-20">
+      {/* Back Button - Floating Icon */}
+      <div className="fixed top-6 left-6 z-40">
+        <Link
+          href="/agents"
+          className="flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-md hover:shadow-lg border border-gray-200 text-gray-900 transition-all hover:scale-110"
+          aria-label="Back to agents"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </Link>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-        <div className="lg:col-span-2">
-          <h1 className="text-4xl font-bold mb-4">{agent.name}</h1>
-          <p className="text-yellow-500 text-lg mb-2">
-            ★ {agent.rating} ({agent.reviews} reviews)
-          </p>
-          <p className="text-gray-600 text-lg mb-6">{agent.bio}</p>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Hero Section - Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 mb-20">
+          
+          {/* Left Column - Agent Profile */}
+          <div className="lg:col-span-3">
+            {/* Agent Portrait Image - Vertical Aspect Ratio */}
+            <div className="relative w-64 aspect-[3/4] bg-slate-200 dark:bg-slate-700 rounded-3xl overflow-hidden shadow-2xl mb-10">
+              <Image
+                src={agent.photoUrl}
+                alt={agent.name}
+                fill
+                className="object-cover object-center"
+                priority
+              />
+            </div>
 
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-gray-100 p-4 rounded-lg text-center">
-              <p className="text-gray-600">Active Listings</p>
-              <p className="text-3xl font-bold">{agent.listings}</p>
+            {/* Agent Name - Serif Typography */}
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-serif text-gray-900 mb-3 leading-tight">
+              {agent.name}
+            </h1>
+
+            {/* Rating & Role Subtitle */}
+            <div className="flex items-center gap-3 mb-8">
+              <div className="flex items-center gap-1.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < Math.floor(agent.rating)
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-gray-600 text-sm">
+                {agent.rating} Client Rating · {agent.specialty}
+              </span>
             </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center">
-              <p className="text-gray-600">Rating</p>
-              <p className="text-3xl font-bold">{agent.rating}</p>
+
+            {/* Bio - Rich Editorial Style */}
+            <p className="text-lg text-gray-700 leading-relaxed mb-12 max-w-xl">
+              {agent.bio}
+            </p>
+
+            {/* Stats Row - Minimalist Divider */}
+            <div className="flex items-center gap-8 pb-12 border-b border-gray-200 mb-12">
+              <div>
+                <p className="text-4xl sm:text-5xl font-black text-gray-900">
+                  {agent.propertiesCount}
+                </p>
+                <p className="text-xs uppercase tracking-widest text-gray-600 mt-2">
+                  Active Listings
+                </p>
+              </div>
+
+              <div className="w-px h-12 bg-gray-300"></div>
+
+              <div>
+                <p className="text-4xl sm:text-5xl font-black text-gray-900">
+                  {agent.rating}
+                </p>
+                <p className="text-xs uppercase tracking-widest text-gray-600 mt-2">
+                  Average Rating
+                </p>
+              </div>
+
+              {agent.yearsExperience && (
+                <>
+                  <div className="w-px h-12 bg-gray-300"></div>
+                  <div>
+                    <p className="text-4xl sm:text-5xl font-black text-gray-900">
+                      {agent.yearsExperience}+
+                    </p>
+                    <p className="text-xs uppercase tracking-widest text-gray-600 mt-2">
+                      Years Experience
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
-            <div className="bg-gray-100 p-4 rounded-lg text-center">
-              <p className="text-gray-600">Reviews</p>
-              <p className="text-3xl font-bold">{agent.reviews}</p>
-            </div>
+
+            {/* Curated Portfolio Section */}
+            {agentProperties.length > 0 && (
+              <div className="mt-20">
+                <h2 className="text-4xl sm:text-5xl font-serif text-gray-900 mb-12">
+                  Curated Portfolio
+                </h2>
+                <CuratedPortfolioGrid properties={agentProperties} />
+              </div>
+            )}
           </div>
 
-          <div className="mb-8">
-            <h3 className="text-2xl font-bold mb-4">Specialties</h3>
-            <div className="flex flex-wrap gap-3">
-              {agent.specialties.map((specialty) => (
-                <div
-                  key={specialty}
-                  className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full"
-                >
-                  {specialty}
+          {/* Right Column - Contact Sidebar */}
+          <div className="lg:col-span-2">
+            <div className="sticky top-24 bg-white border border-gray-200 rounded-3xl p-8 sm:p-10 shadow-lg">
+              {/* Contact Header */}
+              <h3 className="text-2xl font-serif text-gray-900 mb-3">
+                Connect With {agent.name.split(' ')[0]}
+              </h3>
+              <p className="text-gray-700 text-sm leading-relaxed mb-8">
+                Get in touch to discuss properties, schedule viewings, or learn more about how we can help you find your perfect real estate.
+              </p>
+
+              {/* Primary CTA Button */}
+              <button className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl mb-4 transform hover:scale-105">
+                Book Consultation
+              </button>
+
+              {/* Secondary CTA Button */}
+              <button className="w-full py-4 px-6 bg-gray-100 text-gray-900 font-semibold rounded-xl transition-all duration-300 hover:bg-gray-200 mb-6">
+                View All Properties
+              </button>
+
+              {/* Contact Info */}
+              <div className="space-y-4 pt-6 border-t border-gray-200">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-gray-600 mb-2">Email</p>
+                  <p className="text-gray-900 font-medium text-sm">
+                    {agent.name.toLowerCase().replace(/\s+/g, '.')}@luxuryrealestate.com
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold mb-6">Featured Listings</h3>
-            <PropertyGrid properties={properties} columns={3} />
-          </div>
-        </div>
-
-        <div>
-          <div className="bg-white shadow-lg rounded-lg p-6 sticky top-20">
-            <h3 className="text-xl font-bold mb-6">Contact Agent</h3>
-            <div className="space-y-4 mb-6">
-              <div>
-                <p className="text-gray-600 text-sm">Phone</p>
-                <p className="font-semibold">{agent.phone}</p>
-              </div>
-              <div>
-                <p className="text-gray-600 text-sm">Email</p>
-                <p className="font-semibold break-all">{agent.email}</p>
-              </div>
-              <div>
-                <p className="text-gray-600 text-sm">Region</p>
-                <p className="font-semibold">{agent.region}</p>
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-gray-600 mb-2">Phone</p>
+                  <p className="text-gray-900 font-medium text-sm">+91 98765 {String(parseInt(agent.id) * 4321).padStart(5, '0')}</p>
+                </div>
               </div>
             </div>
-
-            <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 mb-3">
-              Send Message
-            </button>
-            <button className="w-full bg-white border-2 border-blue-600 text-blue-600 py-3 rounded-lg font-bold hover:bg-blue-50">
-              Schedule Visit
-            </button>
           </div>
         </div>
       </div>

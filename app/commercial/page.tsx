@@ -1,11 +1,13 @@
-import PageHero from "@/components/PageHero";
+import ListingHeroSection from "@/components/ListingHeroSection";
 
 export default function CommercialPage() {
   return (
     <>
-      <PageHero
+      <ListingHeroSection
         title="Commercial Properties"
-        subtitle="Find office, retail, and industrial real estate"
+        subtitle="Find office, retail, and industrial real estate for your business needs"
+        backgroundImage="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop&q=80"
+        propertyCount={156}
       />
       <section className="max-w-7xl mx-auto py-12">
         <div className="space-y-8">

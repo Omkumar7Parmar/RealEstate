@@ -8,7 +8,8 @@ export default function ContactAgentPage({
   params: { id: string };
 }) {
   const property = getPropertyById(params.id);
-  const agent = property ? getAgentById(property.agentId) : null;
+  // Get first agent as default
+  const agent = getAgentById('1');
 
   if (!property || !agent) {
     return (
@@ -31,26 +32,24 @@ export default function ContactAgentPage({
           <div>
             <h3 className="font-bold text-lg mb-4">Property</h3>
             <img
-              src={property.image}
+              src={property.imageUrl}
               alt={property.title}
               className="w-full h-32 object-cover rounded-lg mb-3"
             />
             <p className="font-semibold">{property.title}</p>
-            <p className="text-gray-600 text-sm">{property.address}</p>
+            <p className="text-gray-600 text-sm">{property.location}</p>
           </div>
 
           <div>
             <h3 className="font-bold text-lg mb-4">Agent</h3>
             <img
-              src={agent.image}
+              src={agent.photoUrl}
               alt={agent.name}
-              className="w-24 h-24 rounded-full mb-3"
+              className="w-24 h-24 rounded-full mb-3 object-cover"
             />
             <p className="font-semibold text-lg">{agent.name}</p>
-            <p className="text-yellow-500 text-sm mb-3">★ {agent.rating} ({agent.reviews} reviews)</p>
+            <p className="text-yellow-500 text-sm mb-3">★ {agent.rating}</p>
             <p className="text-sm text-gray-600 mb-4">{agent.bio}</p>
-            <p className="text-sm"><strong>Phone:</strong> {agent.phone}</p>
-            <p className="text-sm"><strong>Email:</strong> {agent.email}</p>
           </div>
         </div>
 

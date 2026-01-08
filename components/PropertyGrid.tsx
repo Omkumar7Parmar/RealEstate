@@ -15,8 +15,10 @@ export default function PropertyGrid({
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-          <p className="text-gray-600">Loading properties...</p>
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-blue-600 mb-6"></div>
+          <p className="text-xl text-gray-600 font-semibold">
+            Finding perfect homes for you...
+          </p>
         </div>
       </div>
     );
@@ -26,20 +28,26 @@ export default function PropertyGrid({
   if (properties.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-96">
-        <div className="text-center">
-          <div className="text-4xl mb-4">🏠</div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">No Properties Found</h3>
-          <p className="text-gray-600">Try adjusting your search filters or browse other categories.</p>
+        <div className="text-center max-w-md mx-auto">
+          <div className="text-7xl mb-6">🏠</div>
+          <h3 className="text-4xl font-black text-gray-900 mb-4">
+            No Properties Found
+          </h3>
+          <p className="text-xl text-gray-600 leading-relaxed">
+            Try adjusting your search filters or browse other categories.
+          </p>
         </div>
       </div>
     );
   }
 
-  // Grid of properties
+  // Grid of properties with FIXED heights
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 w-full">
       {properties.map((property) => (
-        <PropertyCard key={property.id} property={property} />
+        <div key={property.id} className="w-full h-[480px] sm:h-[520px] lg:h-[560px]">
+          <PropertyCard property={property} />
+        </div>
       ))}
     </div>
   );

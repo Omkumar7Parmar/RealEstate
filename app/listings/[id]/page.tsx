@@ -4,12 +4,13 @@ import PageHero from "@/components/PageHero";
 import { getPropertyById } from "@/lib/properties";
 import { notFound } from "next/navigation";
 
-export default function PropertyDetailPage({
+export default async function PropertyDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const property = getPropertyById(params.id);
+  const { id } = await params;
+  const property = getPropertyById(id);
 
   if (!property) {
     notFound();
@@ -25,6 +26,7 @@ export default function PropertyDetailPage({
       <PageHero
         title={property.title}
         subtitle={property.location}
+        backgroundImage={property.imageUrl}
       />
 
       <section className="max-w-7xl mx-auto py-12">

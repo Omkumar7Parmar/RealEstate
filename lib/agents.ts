@@ -1,93 +1,102 @@
 export interface Agent {
   id: string;
   name: string;
-  email: string;
-  phone: string;
-  image: string;
+  photoUrl: string;
   bio: string;
   rating: number;
-  reviews: number;
-  specialties: string[];
-  listings: number;
-  region: string;
+  reviewCount?: number;
+  propertiesCount: number;
+  properties: string[]; // property IDs they handle
+  specialty?: string; // e.g., "Luxury", "Commercial", "Residential"
+  yearsExperience?: number;
 }
+
 
 export const agents: Agent[] = [
   {
-    id: 'agent-1',
-    name: 'Sarah Johnson',
-    email: 'sarah@realestate.com',
-    phone: '(555) 123-4567',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
-    bio: 'Top-rated agent with 15 years of experience in residential real estate',
+    id: "1",
+    name: "Priya Sharma",
+    photoUrl: "/images/agents/Priya Sharma.jpg",
+    bio: "Senior Real Estate Consultant with 12+ years experience in Mumbai luxury properties.",
     rating: 4.9,
-    reviews: 128,
-    specialties: ['Residential', 'Luxury Homes', 'Investment Properties'],
-    listings: 42,
-    region: 'Downtown & Midtown',
+    reviewCount: 284,
+    propertiesCount: 3,
+    properties: ["1", "3", "5"],
+    specialty: "Luxury",
+    yearsExperience: 12
   },
   {
-    id: 'agent-2',
-    name: 'Michael Chen',
-    email: 'michael@realestate.com',
-    phone: '(555) 234-5678',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    bio: 'Specialist in commercial and industrial properties',
-    rating: 4.7,
-    reviews: 95,
-    specialties: ['Commercial', 'Industrial', 'Development'],
-    listings: 28,
-    region: 'Industrial District',
-  },
-  {
-    id: 'agent-3',
-    name: 'Emily Rodriguez',
-    email: 'emily@realestate.com',
-    phone: '(555) 345-6789',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
-    bio: 'Expert in waterfront and vacation properties',
+    id: "2", 
+    name: "Rahul Patel",
+    photoUrl: "/images/agents/Rahul Patel.webp",
+    bio: "Specialist in affordable housing and rental properties across Mumbai suburbs.",
     rating: 4.8,
-    reviews: 112,
-    specialties: ['Waterfront', 'Vacation Rentals', 'Beachfront'],
-    listings: 35,
-    region: 'Coastal Area',
+    reviewCount: 156,
+    propertiesCount: 3,
+    properties: ["2", "4", "7"],
+    specialty: "Residential",
+    yearsExperience: 9
   },
   {
-    id: 'agent-4',
-    name: 'David Thompson',
-    email: 'david@realestate.com',
-    phone: '(555) 456-7890',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop',
-    bio: 'Suburban specialist with focus on family homes',
+    id: "3",
+    name: "Anita Desai",
+    photoUrl: "/images/agents/Anita Desai.jpg",
+    bio: "Luxury villa and penthouse expert serving high-net-worth clients.",
+    rating: 5.0,
+    reviewCount: 328,
+    propertiesCount: 2,
+    properties: ["15", "6"],
+    specialty: "Luxury",
+    yearsExperience: 15
+  },
+  {
+    id: "4",
+    name: "Vikram Singh",
+    photoUrl: "/images/agents/Vikram Singh.jpg",
+    bio: "Commercial and industrial property specialist with 10+ years in the market.",
+    rating: 4.7,
+    reviewCount: 198,
+    propertiesCount: 2,
+    properties: ["8", "13"],
+    specialty: "Commercial",
+    yearsExperience: 11
+  },
+  {
+    id: "5",
+    name: "Neha Gupta",
+    photoUrl: "/images/agents/Neha Gupta.jpg",
+    bio: "Residential property expert focused on first-time homebuyers and families.",
     rating: 4.6,
-    reviews: 87,
-    specialties: ['Suburban', 'Family Homes', 'Schools Districts'],
-    listings: 31,
-    region: 'Suburban Heights',
+    reviewCount: 142,
+    propertiesCount: 2,
+    properties: ["2", "14"],
+    specialty: "Residential",
+    yearsExperience: 8
   },
   {
-    id: 'agent-5',
-    name: 'Jessica Lee',
-    email: 'jessica@realestate.com',
-    phone: '(555) 567-8901',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
-    bio: 'Historic property renovation expert',
-    rating: 4.9,
-    reviews: 103,
-    specialties: ['Historic Properties', 'Restoration', 'Heritage'],
-    listings: 24,
-    region: 'Historic District',
-  },
+    id: "6",
+    name: "Arjun Verma",
+    photoUrl: "/images/agents/ Arjun Verma.jpg",
+    bio: "Rental properties and investment portfolio management expert.",
+    rating: 4.5,
+    reviewCount: 167,
+    propertiesCount: 2,
+    properties: ["4", "14"],
+    specialty: "Investment",
+    yearsExperience: 10
+  }
 ];
 
-export function getAgentById(id: string): Agent | undefined {
-  return agents.find((a) => a.id === id);
+export function getTopRatedAgents(limit: number = 3): Agent[] {
+  return agents
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, limit);
 }
 
-export function getAgentsByRegion(region: string): Agent[] {
-  return agents.filter((a) => a.region.includes(region));
+export function getAgentById(id: string): Agent | null {
+  return agents.find(agent => agent.id === id) || null;
 }
 
-export function getTopRatedAgents(limit: number = 5): Agent[] {
-  return [...agents].sort((a, b) => b.rating - a.rating).slice(0, limit);
+export function getFeaturedAgents(): Agent[] {
+  return agents.slice(0, 3);
 }
