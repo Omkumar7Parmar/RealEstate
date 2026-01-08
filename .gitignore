@@ -72,3 +72,8 @@ next-env.d.ts
 tmp/
 temp/
 *.temp
+
+# Block all markdown except docs
+**/*.md
+!README.md
+!DEV_NOTES.md
