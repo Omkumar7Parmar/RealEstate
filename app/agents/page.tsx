@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { agents } from '@/lib/agents';
 import AgentGrid from '@/components/AgentGrid';
 import { Search, Sliders } from 'lucide-react';
@@ -10,6 +10,16 @@ const SPECIALTIES = ['All', 'Luxury', 'Residential', 'Commercial', 'Investment']
 export default function AgentsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  const agentGridRef = useRef<HTMLDivElement>(null);
+
+  const scrollToAgents = () => {
+    agentGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    scrollToAgents();
+  };
 
   // Filter agents
   const filteredAgents = useMemo(() => {
@@ -61,7 +71,7 @@ export default function AgentsPage() {
 
             {/* Search Bar */}
             <div className="mt-4 sm:mt-6">
-              <form className="flex flex-col gap-2 sm:gap-3">
+              <form onSubmit={handleSearchSubmit} className="flex flex-col gap-2 sm:gap-3">
                 {/* Main Search Container */}
                 <div className="bg-white/10 backdrop-blur-xl rounded-lg sm:rounded-xl lg:rounded-2xl p-1 sm:p-1.5 border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300">
                   <div className="flex flex-col lg:flex-row gap-1 sm:gap-2 lg:gap-0">
@@ -112,7 +122,7 @@ export default function AgentsPage() {
       </section>
 
       {/* Agents Grid Section */}
-      <div className="w-full bg-white">
+      <div ref={agentGridRef} className="w-full bg-white scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           {filteredAgents.length > 0 ? (
             <AgentGrid agents={filteredAgents} />

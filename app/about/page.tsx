@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Heart, Zap, Users, ArrowRight } from 'lucide-react';
+import { Heart, Zap, Users, ArrowRight, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { useFirebaseAuth } from '@/hooks/useFirebaseAuth';
 
 const StatCounter = ({ end, duration = 2, showPlus = true }: { end: number; duration?: number; showPlus?: boolean }) => {
   const [count, setCount] = useState(0);
@@ -40,69 +41,24 @@ const StatCounter = ({ end, duration = 2, showPlus = true }: { end: number; dura
 };
 
 export default function AboutPage() {
+  const { isAuthenticated, isLoading } = useFirebaseAuth();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <>
-      {/* Section 1: Premium Hero Section */}
-      <section className="relative w-full min-h-[60vh] sm:min-h-[80vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1570129477492-45201003acee?w=1400&h=900&fit=crop&q=80')`,
-          }}
-        >
-          {/* Dark Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/60 to-black/70" />
+      {/* Hero Section - New Style */}
+      <section className="gradient-earth py-[clamp(8rem,20vh,12rem)] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_100%_at_50%_-10%,rgba(120,119,198,0.2),transparent)]" />
+        <div className="max-w-[90vw] lg:max-w-7xl xl:max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-20 relative z-10">
+          <h1 className="text-h1 text-gray-900 mb-4">About RealEstate</h1>
+          <p className="text-h3 text-gray-700 max-w-3xl">
+            We simplify real estate for everyone. Making property discovery transparent, fair, and accessible across India.
+          </p>
         </div>
-
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-full blur-3xl -z-10 animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-64 sm:w-96 h-64 sm:h-96 bg-gradient-to-tr from-cyan-500 to-violet-500 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDelay: '1s' }} />
-        </div>
-
-        {/* Content Container */}
-        <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-          <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
-            {/* Badge */}
-            <div className="inline-block mb-1 sm:mb-2">
-              <span className="text-xs sm:text-sm font-semibold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-fuchsia-400 uppercase">
-                ✨ About RealEstate
-              </span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-tight tracking-tight">
-              We Simplify{" "}
-              <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-                Real Estate
-              </span>
-              <br />
-              For Everyone
-            </h1>
-
-            {/* Subheading */}
-            <p className="text-sm sm:text-lg md:text-xl text-gray-200 max-w-3xl mx-auto leading-relaxed tracking-wide">
-              Making property discovery transparent, fair, and accessible to every person in India. We're revolutionizing how people buy, sell, and rent properties.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center pt-6 sm:pt-8">
-              <Link href="/buy">
-                <button className="group px-6 sm:px-10 py-3 sm:py-5 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 hover:from-violet-600 hover:via-fuchsia-600 hover:to-cyan-600 text-white font-bold text-sm sm:text-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-2xl hover:shadow-violet-500/50 flex items-center gap-2 whitespace-nowrap">
-                  Explore Properties
-                  <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </Link>
-              <button className="group px-6 sm:px-10 py-3 sm:py-5 rounded-full border-2 border-white/30 hover:border-white/60 text-white font-bold text-sm sm:text-lg transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 hover:bg-white/10 backdrop-blur-sm flex items-center gap-2 whitespace-nowrap">
-                Learn More
-                <ArrowRight className="w-4 sm:w-5 h-4 sm:h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-
       </section>
 
       {/* Section 2: Brand Story - Asymmetrical Split */}
@@ -245,13 +201,13 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Stat 4 - Years Experience */}
+            {/* Stat 4 - Avg Rating */}
             <div className="group relative">
               <div className="absolute inset-0 bg-gradient-to-br from-amber-600/20 to-orange-600/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl" />
               <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl sm:rounded-3xl p-6 sm:p-8 hover:bg-white/15 hover:border-white/40 transition-all duration-300 min-h-[160px] sm:min-h-[180px] flex flex-col justify-center overflow-hidden group-hover:-translate-y-1">
-                <p className="text-xs uppercase tracking-widest text-amber-300 mb-2 sm:mb-4 font-bold">Years of Excellence</p>
+                <p className="text-xs uppercase tracking-widest text-amber-300 mb-2 sm:mb-4 font-bold">Avg. Rating</p>
                 <p className="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400 leading-tight break-words">
-                  <StatCounter end={15} duration={2} />
+                  4.9★
                 </p>
               </div>
             </div>
@@ -259,17 +215,25 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 4: Core Values - Glass Cards */}
-      <section className="bg-white py-20 sm:py-32 lg:py-40 px-4 sm:px-6 lg:px-8">
+      {/* Section 4: Our Values */}
+      <section className="bg-gradient-to-b from-gray-50 to-white py-20 sm:py-32 lg:py-40 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 space-y-4">
-            <p className="text-xs sm:text-sm uppercase tracking-[3px] text-blue-600 font-semibold">Our Foundation</p>
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900">
-              Core Values
+          {/* Header */}
+          <div className="text-center mb-16 sm:mb-20 space-y-6">
+            <div className="inline-block">
+              <span className="text-sm font-semibold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600 uppercase">
+                💎 Our Values
+              </span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 leading-tight tracking-tight">
+              What We Stand For
             </h2>
+            <p className="text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto">
+              The principles that guide everything we do
+            </p>
           </div>
 
-          {/* Values Grid */}
+          {/* Values Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Value 1: Transparency */}
             <div className="group bg-white/50 backdrop-blur-md border border-gray-200 rounded-3xl p-10 hover:bg-white/80 hover:-translate-y-2 transition-all duration-300 cursor-pointer">
@@ -307,7 +271,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 5: Footer CTA */}
+      {/* Section 5: Footer CTA - Only show if not logged in */}
+      {isMounted && !isLoading && !isAuthenticated && (
       <section className="relative w-full overflow-hidden">
         {/* Background with Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
@@ -409,6 +374,68 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* Social Media Section */}
+      <section className="relative w-full bg-white border-t border-gray-200 py-12 sm:py-16 lg:py-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4">
+              Follow Us
+            </h2>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              Stay updated with the latest real estate insights, property listings, and market trends
+            </p>
+          </div>
+
+          {/* Social Media Icons */}
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
+            {/* Facebook */}
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group p-4 rounded-full bg-white border-2 border-gray-200 hover:border-blue-600 hover:bg-blue-50 transition-all duration-300 transform hover:scale-110"
+              aria-label="Follow on Facebook"
+            >
+              <Facebook className="w-8 h-8 text-gray-700 group-hover:text-blue-600 transition-colors" />
+            </a>
+
+            {/* Twitter */}
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group p-4 rounded-full bg-white border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 transform hover:scale-110"
+              aria-label="Follow on Twitter"
+            >
+              <Twitter className="w-8 h-8 text-gray-700 group-hover:text-blue-400 transition-colors" />
+            </a>
+
+            {/* LinkedIn */}
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group p-4 rounded-full bg-white border-2 border-gray-200 hover:border-blue-700 hover:bg-blue-50 transition-all duration-300 transform hover:scale-110"
+              aria-label="Follow on LinkedIn"
+            >
+              <Linkedin className="w-8 h-8 text-gray-700 group-hover:text-blue-700 transition-colors" />
+            </a>
+
+            {/* Instagram */}
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group p-4 rounded-full bg-white border-2 border-gray-200 hover:border-pink-600 hover:bg-pink-50 transition-all duration-300 transform hover:scale-110"
+              aria-label="Follow on Instagram"
+            >
+              <Instagram className="w-8 h-8 text-gray-700 group-hover:text-pink-600 transition-colors" />
+            </a>
           </div>
         </div>
       </section>

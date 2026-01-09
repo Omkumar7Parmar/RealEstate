@@ -137,6 +137,13 @@ export default function DashboardPage() {
   const carouselRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const propertiesPerPage = 3;
+  const totalPages = Math.ceil(savedProperties.length / propertiesPerPage);
+  const paginatedProperties = savedProperties.slice(
+    (currentPage - 1) * propertiesPerPage,
+    currentPage * propertiesPerPage
+  );
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -207,40 +214,43 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-50 to-slate-100">
-      {/* CONCIERGE WELCOME BANNER - Full Width Hero Card */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
-        <div className="relative overflow-hidden">
-          {/* Animated Background Pattern */}
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-violet-500 to-fuchsia-500 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-cyan-500 to-blue-500 rounded-full blur-3xl animate-pulse" />
-          </div>
-
-          {/* Content */}
-          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
-            <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-8">
-              {/* Left: Greeting & Status */}
-              <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm uppercase tracking-widest text-violet-300 font-semibold mb-1 sm:mb-2">
-                  {greeting}
+      {/* CONCIERGE WELCOME BANNER - Gradient Earth Aesthetic */}
+      <section className="gradient-earth py-[clamp(8rem,20vh,12rem)] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_100%_at_50%_-10%,rgba(120,119,198,0.2),transparent)]" />
+        
+        <div className="max-w-[90vw] lg:max-w-7xl xl:max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-20 relative z-10">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-8">
+            {/* Left: Greeting & Status */}
+            <div className="flex-1 min-w-0">
+              <p className="text-xs sm:text-sm uppercase tracking-widest text-gray-500 font-semibold mb-1 sm:mb-2">
+                {greeting}
+              </p>
+              <h1 className="text-h1 text-gray-900 mb-4">
+                Hey, <span className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-600 bg-clip-text text-transparent">
+                  {firstName}
+                </span>
+              </h1>
+              <div className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/60 border border-gray-200 backdrop-blur-md">
+                <p className="text-xs sm:text-sm text-gray-700">
+                  ✨ You have <span className="font-bold text-violet-600">3 new price alerts</span> today
                 </p>
-                <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-3 sm:mb-4 break-words">
-                  Hey, <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
-                    {firstName}
-                  </span>
-                </h1>
-                <div className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
-                  <p className="text-xs sm:text-sm text-slate-300">
-                    ✨ You have <span className="font-bold text-cyan-300">3 new price alerts</span> today
-                  </p>
-                </div>
               </div>
+            </div>
 
-              {/* Right: Logout Button */}
+            {/* Right: Buttons */}
+            <div className="flex-shrink-0 w-full sm:w-auto flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3 sm:mt-0">
+              {/* Home Button */}
+              <Link href="/">
+                <button className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-gray-700 font-semibold text-xs sm:text-sm transition-all duration-300 shadow-sm">
+                  <Home className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
+                  <span>Home</span>
+                </button>
+              </Link>
+              {/* Logout Button */}
               <button
                 onClick={handleLogout}
                 disabled={isLoggingOut}
-                className="flex-shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-red-500/20 border border-red-400/30 hover:bg-red-500/30 hover:border-red-400/50 text-red-200 font-semibold text-xs sm:text-sm transition-all duration-300 disabled:opacity-50 mt-3 sm:mt-0"
+                className="w-full sm:w-auto flex-shrink-0 inline-flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-red-100 border border-red-200 hover:bg-red-200 hover:border-red-300 text-red-600 font-semibold text-xs sm:text-sm transition-all duration-300 disabled:opacity-50 shadow-sm"
               >
                 <LogOut className="w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
                 <span>
@@ -250,16 +260,16 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* MAIN BENTO GRID LAYOUT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* ROW 1: SAVED PROPERTIES CAROUSEL - Full Width Hero Feature */}
+        {/* ROW 1: SAVED PROPERTIES - Grid with Pagination */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-3xl font-black text-slate-900">Your Saved Homes</h2>
-              <p className="text-slate-600 mt-1">12 properties saved</p>
+              <p className="text-slate-600 mt-1">{savedProperties.length} properties saved</p>
             </div>
             <Link href="/favorites">
               <button className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 text-white font-semibold hover:shadow-lg transition-all duration-300 hover:scale-105">
@@ -269,76 +279,87 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          <div className="relative">
-            {/* Carousel Scroll Container */}
-            <div
-              ref={carouselRef}
-              className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth"
-              style={{ scrollBehavior: 'smooth' }}
-            >
-              {savedProperties.map((property) => (
-                <div
-                  key={property.id}
-                  className="flex-shrink-0 w-80 group cursor-pointer"
-                >
-                  <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 hover:border-violet-400 hover:shadow-2xl transition-all duration-300 h-full">
-                    {/* Image */}
-                    <div className="relative h-48 overflow-hidden bg-slate-100">
-                      <img
-                        src={property.image}
-                        alt={property.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                      <button className="absolute top-4 right-4 p-3 rounded-full bg-white/90 backdrop-blur-md hover:bg-white transition-colors duration-300 shadow-lg">
-                        <Heart className="w-5 h-5 text-red-600 fill-red-600" />
-                      </button>
+          {/* Properties Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {paginatedProperties.map((property) => (
+              <div
+                key={property.id}
+                className="group cursor-pointer"
+              >
+                <div className="bg-white rounded-2xl overflow-hidden border border-slate-200 hover:border-violet-400 hover:shadow-2xl transition-all duration-300 h-full">
+                  {/* Image */}
+                  <div className="relative h-48 overflow-hidden bg-slate-100">
+                    <img
+                      src={property.image}
+                      alt={property.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <button className="absolute top-4 right-4 p-3 rounded-full bg-white/90 backdrop-blur-md hover:bg-white transition-colors duration-300 shadow-lg">
+                      <Heart className="w-5 h-5 text-red-600 fill-red-600" />
+                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-5">
+                    <h3 className="font-black text-slate-900 text-lg mb-2">
+                      {property.title}
+                    </h3>
+                    <div className="flex items-center gap-1 text-sm text-slate-600 mb-4">
+                      <MapPin className="w-4 h-4" />
+                      {property.location}
                     </div>
 
-                    {/* Content */}
-                    <div className="p-5">
-                      <h3 className="font-black text-slate-900 text-lg mb-2">
-                        {property.title}
-                      </h3>
-                      <div className="flex items-center gap-1 text-sm text-slate-600 mb-4">
-                        <MapPin className="w-4 h-4" />
-                        {property.location}
+                    <div className="border-t border-slate-100 pt-4 flex items-center justify-between">
+                      <div>
+                        <p className="text-2xl font-black text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text">
+                          {property.price}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">{property.sqft}</p>
                       </div>
-
-                      <div className="border-t border-slate-100 pt-4 flex items-center justify-between">
-                        <div>
-                          <p className="text-2xl font-black text-transparent bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text">
-                            {property.price}
-                          </p>
-                          <p className="text-xs text-slate-500 mt-1">{property.sqft}</p>
-                        </div>
-                        <button className="p-3 rounded-xl bg-violet-100 group-hover:bg-violet-200 transition-colors duration-300">
-                          <ChevronRight className="w-5 h-5 text-violet-600" />
-                        </button>
-                      </div>
+                      <button className="p-3 rounded-xl bg-violet-100 group-hover:bg-violet-200 transition-colors duration-300">
+                        <ChevronRight className="w-5 h-5 text-violet-600" />
+                      </button>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
 
-            {/* Carousel Controls */}
-            {canScrollLeft && (
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-8">
               <button
-                onClick={() => scrollCarousel('left')}
-                className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white border border-slate-200 shadow-lg hover:shadow-xl hover:bg-slate-50 transition-all duration-300"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="w-5 h-5 text-slate-900" />
               </button>
-            )}
-            {canScrollRight && (
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-10 h-10 rounded-full font-semibold text-sm transition-all duration-300 ${
+                    currentPage === page
+                      ? 'bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-md'
+                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              
               <button
-                onClick={() => scrollCarousel('right')}
-                className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white border border-slate-200 shadow-lg hover:shadow-xl hover:bg-slate-50 transition-all duration-300"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-full bg-white border border-slate-200 shadow-sm hover:shadow-md hover:bg-slate-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRight className="w-5 h-5 text-slate-900" />
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* ROW 2: RESPONSIVE GRID - Dashboard Stats & Content */}

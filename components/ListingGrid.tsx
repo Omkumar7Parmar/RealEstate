@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import PremiumPropertyCard from '@/components/PremiumPropertyCard';
 import { Property } from '@/lib/properties';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 
 interface ListingGridProps {
@@ -14,6 +14,7 @@ interface ListingGridProps {
 
 export default function ListingGrid({ properties, type, title }: ListingGridProps) {
   const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high'>('newest');
+  const [visibleCount, setVisibleCount] = useState(6);
 
   // Sort properties based on selection
   const sortedProperties = [...properties].sort((a, b) => {
@@ -22,17 +23,25 @@ export default function ListingGrid({ properties, type, title }: ListingGridProp
     return 0;
   });
 
+  const visibleProperties = sortedProperties.slice(0, visibleCount);
+  const hasMore = visibleCount < sortedProperties.length;
+  const remainingCount = sortedProperties.length - visibleCount;
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => Math.min(prev + 6, sortedProperties.length));
+  };
+
   const accentColor = type === 'buy' ? 'from-emerald-600 to-teal-600' : 'from-amber-600 to-orange-600';
 
   return (
     <>
       {/* Sticky Filter Bar */}
-      <div className="sticky top-0 z-40 w-full">
+      <div className="sticky top-16 sm:top-20 z-40 w-full">
         <div className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-          <div className="max-w-[90vw] lg:max-w-7xl xl:max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-20 py-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="max-w-[90vw] lg:max-w-7xl xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 py-3 sm:py-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
               {/* Left: Segmented Control for Buy/Rent */}
-              <div className="bg-gray-100 rounded-full p-1 inline-flex">
+              <div className="bg-gray-100 rounded-full p-1 inline-flex self-start sm:self-auto">
                 <Link href="/listings/sale">
                   <button
                     className={`px-6 py-2 rounded-full font-medium text-sm transition-all duration-300 ${
@@ -58,16 +67,16 @@ export default function ListingGrid({ properties, type, title }: ListingGridProp
               </div>
 
               {/* Right: Sort Dropdown */}
-              <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full border border-transparent">
-                <TrendingUp className="w-4 h-4 text-gray-600" />
+              <div className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-100 rounded-full border border-transparent self-start sm:self-auto">
+                <TrendingUp className="w-4 h-4 text-gray-600 flex-shrink-0" />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="bg-transparent text-sm font-medium text-gray-700 outline-none cursor-pointer"
+                  className="bg-transparent text-xs sm:text-sm font-medium text-gray-700 outline-none cursor-pointer"
                 >
                   <option value="newest">Newest</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
+                  <option value="price-low">Price: Low → High</option>
+                  <option value="price-high">Price: High → Low</option>
                 </select>
               </div>
             </div>
@@ -76,13 +85,13 @@ export default function ListingGrid({ properties, type, title }: ListingGridProp
       </div>
 
       {/* Main Content */}
-      <section className="max-w-[90vw] lg:max-w-7xl xl:max-w-screen-2xl mx-auto px-6 lg:px-12 xl:px-20 py-12">
+      <section className="max-w-[90vw] lg:max-w-7xl xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12 xl:px-20 py-8 sm:py-12">
         {/* Page Header */}
-        <div className="mb-12">
-          <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-2">
+        <div className="mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-2">
             {title}
           </h2>
-          <p className="text-lg text-slate-600">
+          <p className="text-sm sm:text-base lg:text-lg text-slate-600">
             Showing{' '}
             <span className={`text-2xl font-black bg-gradient-to-r ${accentColor} bg-clip-text text-transparent`}>
               {sortedProperties.length}
@@ -105,19 +114,42 @@ export default function ListingGrid({ properties, type, title }: ListingGridProp
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full">
-            {sortedProperties.map((property, index) => (
-              <div
-                key={property.id}
-                className="h-full animate-fade-in"
-                style={{
-                  animationDelay: `${index * 50}ms`,
-                }}
-              >
-                <PremiumPropertyCard property={property} />
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full">
+              {visibleProperties.map((property, index) => (
+                <div
+                  key={property.id}
+                  className="h-full animate-fade-in"
+                  style={{
+                    animationDelay: `${index * 50}ms`,
+                  }}
+                >
+                  <PremiumPropertyCard property={property} />
+                </div>
+              ))}
+            </div>
+
+            {/* View More Button */}
+            {hasMore && (
+              <div className="flex flex-col items-center mt-12">
+                <button
+                  onClick={handleLoadMore}
+                  className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-500 text-white font-bold text-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+                >
+                  View More
+                  <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform duration-300" />
+                </button>
+                <p className="mt-3 text-sm text-slate-500">
+                  {remainingCount} more propert{remainingCount !== 1 ? 'ies' : 'y'} to show
+                </p>
               </div>
-            ))}
-          </div>
+            )}
+
+            {/* Showing count */}
+            <div className="text-center mt-6 text-sm text-slate-500">
+              Showing {visibleProperties.length} of {sortedProperties.length} properties
+            </div>
+          </>
         )}
       </section>
 

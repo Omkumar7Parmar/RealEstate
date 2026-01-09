@@ -1,19 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function ScrollToTop() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const prevPathRef = useRef(pathname);
 
   useEffect(() => {
-    // Exclude property search pages from auto-scroll
-    const isPropertySearch = pathname?.includes('/listings') || pathname?.includes('/search');
-    
-    if (!isPropertySearch) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Only scroll if the pathname actually changed (not just search params)
+    if (prevPathRef.current !== pathname) {
+      // Scroll to top for all page navigations
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      prevPathRef.current = pathname;
     }
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   return null;
 }
