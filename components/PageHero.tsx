@@ -1,8 +1,10 @@
+import type { ReactNode } from "react";
+
 interface PageHeroProps {
   title: string;
   subtitle?: string;
   backgroundImage?: string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 export default function PageHero({
@@ -18,9 +20,9 @@ export default function PageHero({
         backgroundImage
           ? {
               backgroundImage: `linear-gradient(135deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.45) 100%), url(${backgroundImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundAttachment: 'fixed',
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundAttachment: "fixed",
             }
           : {}
       }
@@ -29,7 +31,10 @@ export default function PageHero({
       {!backgroundImage && (
         <>
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/30 to-blue-600/30 rounded-full blur-3xl -z-10 animate-pulse" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/30 to-blue-700/30 rounded-full blur-3xl -z-10 animate-pulse" style={{ animationDelay: '1s' }} />
+          <div
+            className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-blue-500/30 to-blue-700/30 rounded-full blur-3xl -z-10 animate-pulse"
+            style={{ animationDelay: "1s" }}
+          />
         </>
       )}
 
